@@ -1,0 +1,32 @@
+# Node.js 相關
+/node_modules
+pnpm-debug.log
+
+# TypeScript 相關
+/dist
+*.tsbuildinfo
+
+# 環境變數檔案
+.env
+
+# 日誌檔案
+/logs
+*.log
+
+# 資料庫檔案
+
+# IDE/編輯器 設定
+.DS_Store
+
+# 測試相關
+/coverage
+*.lcov
+
+# Docker 相關
+docker-compose.override.yml
+docker-compose.override.yaml
+
+# 其他不必要的檔案
+Thumbs.db
+*.bak
+*.swp
