@@ -20,12 +20,18 @@ importers:
       '@fastify/swagger-ui':
         specifier: ^5.2.2
         version: 5.2.2
+      '@sinclair/typebox':
+        specifier: ^0.34.33
+        version: 0.34.33
       dotenv:
         specifier: ^16.5.0
         version: 16.5.0
       fastify:
         specifier: ^5.3.2
         version: 5.3.2
+      pg:
+        specifier: ^8.15.6
+        version: 8.15.6
     devDependencies:
       '@types/node':
         specifier: ^22.15.2
@@ -237,6 +243,9 @@ packages:
   '@lukeed/ms@2.0.2':
     resolution: {integrity: sha512-9I2Zn6+NJLfaGoz9jN3lpwDgAYvfGeNYdbAIjJOqzs4Tpc+VU3Jqq4IofSUBKajiDS8k9fZIg18/z13mpk1bsA==}
     engines: {node: '>=8'}
+
+  '@sinclair/typebox@0.34.33':
+    resolution: {integrity: sha512-5HAV9exOMcXRUxo+9iYB5n09XxzCXnfy4VTNW4xnDv+FgjzAGY989C28BIdljKqmF+ZltUwujE3aossvcVtq6g==}
 
   '@types/node@22.15.2':
     resolution: {integrity: sha512-uKXqKN9beGoMdBfcaTY1ecwz6ctxuJAcUlwE55938g0ZJ8lRxwAZqRz2AJ4pzpt5dHdTPMB863UZ0ESiFUcP7A==}
@@ -820,6 +829,8 @@ snapshots:
       wrap-ansi-cjs: wrap-ansi@7.0.0
 
   '@lukeed/ms@2.0.2': {}
+
+  '@sinclair/typebox@0.34.33': {}
 
   '@types/node@22.15.2':
     dependencies:
