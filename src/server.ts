@@ -4,6 +4,7 @@ import fastifyPostgres from "@fastify/postgres";
 import swagger from "@fastify/swagger";
 import swaggerUI from "@fastify/swagger-ui";
 import streamsRoutes from "./routes/streams.js";
+import chatsRoutes from "./routes/chats.js";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -38,6 +39,7 @@ fastify.register(swaggerUI, {
 });
 
 fastify.register(streamsRoutes, { prefix: "/api/streams" });
+fastify.register(chatsRoutes, { prefix: "/api/streams" });
 
 const start = async () => {
   try {

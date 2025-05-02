@@ -41,7 +41,7 @@ export const createStreamSchema = {
 
 // 抽出 params schema（可重用 + 推導 TS 類型）
 const GetStreamParamsSchema = Type.Object({
-  streamId: Type.String(),
+  streamId: Type.Number(),
 });
 
 // 直接推導 TypeScript 類型，不需重複寫

@@ -1,11 +1,11 @@
 // service 的責任只有：接收乾淨的資料（純變數，不包含 HTTP 或框架物件）、根據業務邏輯處理資料、不包含參數驗證、錯誤回傳格式、HTTP 狀態碼等與框架有關的處理
 // 保持與框架（Fastify、Express）無關，確保可被單元測試與複用
 
+import type { PoolClient } from "pg";
 import type {
   CreateStreamInput,
   UpdateStreamInput,
 } from "../schemas/streams.schema";
-import type { PoolClient } from "pg";
 
 export const createStream = async (
   client: PoolClient,

@@ -19,8 +19,6 @@ export const createStreamHandler = async (
   request: FastifyRequest<{ Body: CreateStreamInput }>,
   reply: FastifyReply
 ) => {
-  const { body } = request;
-
   const client = await request.server.pg.connect();
 
   const userId = request.user?.id ?? 1; // TODO: 從 JWT middleware 注入 user
@@ -31,7 +29,7 @@ export const createStreamHandler = async (
   const streamKey = generateStreamKey(); // 後端產生
 
   try {
-    const result = await createStream(client, body, userId, streamKey);
+    const result = await createStream(client, request.body, userId, streamKey);
     return reply.status(201).send(result);
   } catch (error) {
     return reply
