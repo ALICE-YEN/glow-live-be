@@ -30,12 +30,39 @@ export const updateChat = async (
 ) => {
   const query = `
     UPDATE chat_messages
-    SET content = $1,
-        updated_at = NOW()
+    SET content = $1, updated_at = NOW()
     WHERE id = $2
     RETURNING *;
   `;
+
   const values = [data.content, chatId];
+
+  const result = await client.query(query, values);
+  return result.rows[0];
+};
+
+export const getChats = async (client: PoolClient, streamId: number) => {
+  const query = `
+    SELECT *
+    FROM chat_messages
+    WHERE stream_id = $1
+    ORDER BY created_at ASC;
+  `;
+
+  const values = [streamId];
+
+  const result = await client.query(query, values);
+  return result.rows;
+};
+
+export const deleteChat = async (client: PoolClient, chatId: number) => {
+  const query = `
+    DELETE FROM chat_messages
+    WHERE id = $1
+    RETURNING *;
+  `;
+
+  const values = [chatId];
 
   const result = await client.query(query, values);
   return result.rows[0];

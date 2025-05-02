@@ -2,8 +2,15 @@ import { FastifyInstance } from "fastify";
 import {
   createChatHandler,
   updateChatHandler,
+  getChatsHandler,
+  deleteChatHandler,
 } from "../controllers/chats.controller";
-import { createChatSchema, updateChatSchema } from "../schemas/chats.schema";
+import {
+  createChatSchema,
+  updateChatSchema,
+  getChatsSchema,
+  deleteChatSchema,
+} from "../schemas/chats.schema";
 
 async function chatsRoutes(fastify: FastifyInstance) {
   fastify.post(
@@ -15,6 +22,12 @@ async function chatsRoutes(fastify: FastifyInstance) {
     "/:streamId/chats/:chatId",
     { schema: updateChatSchema },
     updateChatHandler
+  );
+  fastify.get("/:streamId/chats", { schema: getChatsSchema }, getChatsHandler);
+  fastify.delete(
+    "/:streamId/chats/:chatId",
+    { schema: deleteChatSchema },
+    deleteChatHandler
   );
 }
 

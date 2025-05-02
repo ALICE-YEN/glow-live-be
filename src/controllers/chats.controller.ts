@@ -1,16 +1,21 @@
 // controller 的責任只有：參數檢查、錯誤處理、回傳格式
 
 import { FastifyRequest, FastifyReply } from "fastify";
-import { createChat, updateChat } from "../services/chats.service";
 import {
-  CreateChatParams,
+  createChat,
+  updateChat,
+  getChats,
+  deleteChat,
+} from "../services/chats.service";
+import {
+  StreamIdParams,
   CreateChatInput,
-  UpdateChatParams,
+  ChatRouteParams,
   UpdateChatInput,
 } from "../schemas/chats.schema";
 
 export const createChatHandler = async (
-  request: FastifyRequest<{ Params: CreateChatParams; Body: CreateChatInput }>,
+  request: FastifyRequest<{ Params: StreamIdParams; Body: CreateChatInput }>,
   reply: FastifyReply
 ) => {
   const client = await request.server.pg.connect();
@@ -34,7 +39,7 @@ export const createChatHandler = async (
 };
 
 export const updateChatHandler = async (
-  request: FastifyRequest<{ Params: UpdateChatParams; Body: UpdateChatInput }>,
+  request: FastifyRequest<{ Params: ChatRouteParams; Body: UpdateChatInput }>,
   reply: FastifyReply
 ) => {
   const client = await request.server.pg.connect();
@@ -45,12 +50,50 @@ export const updateChatHandler = async (
       .send({ message: "請提供要更新的內容", code: "BAD_REQUEST" });
   }
   try {
-    const chat = await updateChat(client, request.params.chatId, request.body);
-    return reply.status(200).send(chat);
+    const result = await updateChat(
+      client,
+      request.params.chatId,
+      request.body
+    );
+    return reply.status(200).send(result);
   } catch (error) {
     return reply
       .status(500)
       .send({ message: "更新聊天室訊息失敗", code: "INTERNAL_ERROR" });
+  } finally {
+    client.release();
+  }
+};
+
+export const getChatsHandler = async (
+  request: FastifyRequest<{ Params: StreamIdParams }>,
+  reply: FastifyReply
+) => {
+  const client = await request.server.pg.connect();
+  try {
+    const result = await getChats(client, request.params.streamId);
+    return reply.send(result);
+  } catch (error) {
+    return reply
+      .status(500)
+      .send({ message: "取得聊天室列表失敗", code: "INTERNAL_ERROR" });
+  } finally {
+    client.release();
+  }
+};
+
+export const deleteChatHandler = async (
+  request: FastifyRequest<{ Params: ChatRouteParams }>,
+  reply: FastifyReply
+) => {
+  const client = await request.server.pg.connect();
+  try {
+    await deleteChat(client, request.params.chatId);
+    return reply.status(204).send();
+  } catch (error) {
+    return reply
+      .status(500)
+      .send({ message: "刪除聊天室訊息失敗", code: "INTERNAL_ERROR" });
   } finally {
     client.release();
   }
