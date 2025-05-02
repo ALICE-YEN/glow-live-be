@@ -2,9 +2,10 @@
 // 保持與框架（Fastify、Express）無關，確保可被單元測試與複用
 
 import type { CreateStreamInput } from "../schemas/streams.schema";
+import type { PoolClient } from "pg";
 
 export const createStream = async (
-  client: any,
+  client: PoolClient,
   body: CreateStreamInput,
   userId: number,
   streamKey: string
@@ -21,4 +22,24 @@ export const createStream = async (
 
   const result = await client.query(query, values);
   return result.rows[0];
+};
+
+export const getStream = async (client: PoolClient, streamId: string) => {
+  const query = `
+      SELECT * FROM streams WHERE id = $1;
+      `;
+
+  const values = [streamId];
+
+  const result = await client.query(query, values);
+  return result.rows[0];
+};
+
+export const getStreams = async (client: PoolClient) => {
+  const query = `
+      SELECT * FROM streams;
+      `;
+
+  const result = await client.query(query);
+  return result.rows;
 };
