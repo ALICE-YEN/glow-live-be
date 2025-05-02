@@ -3,11 +3,15 @@ import {
   createStreamSchema,
   getStreamSchema,
   getStreamsSchema,
+  updateStreamSchema,
+  endStreamSchema,
 } from "../schemas/streams.schema";
 import {
   createStreamHandler,
   getStreamHandler,
   getStreamsHandler,
+  updateStreamHandler,
+  endStreamHandler,
 } from "../controllers/streams.controller";
 
 // 利用 Fastify 在路由註冊時綁定 schema，讓 Fastify
@@ -18,6 +22,16 @@ async function streamsRoutes(fastify: FastifyInstance) {
   fastify.post("/", { schema: createStreamSchema }, createStreamHandler);
   fastify.get("/:streamId", { schema: getStreamSchema }, getStreamHandler);
   fastify.get("/", { schema: getStreamsSchema }, getStreamsHandler);
+  fastify.patch(
+    "/:streamId",
+    { schema: updateStreamSchema },
+    updateStreamHandler
+  );
+  fastify.patch(
+    "/:streamId/end",
+    { schema: endStreamSchema },
+    endStreamHandler
+  );
 }
 
 export default streamsRoutes;
