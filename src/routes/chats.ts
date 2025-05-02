@@ -1,16 +1,16 @@
 import { FastifyInstance } from "fastify";
 import {
-  createChatHandler,
-  updateChatHandler,
-  getChatsHandler,
-  deleteChatHandler,
-} from "../controllers/chats.controller";
-import {
   createChatSchema,
   updateChatSchema,
   getChatsSchema,
   deleteChatSchema,
 } from "../schemas/chats.schema";
+import {
+  createChatHandler,
+  updateChatHandler,
+  getChatsHandler,
+  deleteChatHandler,
+} from "../controllers/chats.controller";
 
 async function chatsRoutes(fastify: FastifyInstance) {
   fastify.post(

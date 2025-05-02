@@ -100,3 +100,31 @@ export const endStreamSchema = {
     200: StreamResponseSchema,
   },
 };
+
+export const SendGiftBodySchema = Type.Object({
+  sender_id: Type.Number(),
+  receiver_id: Type.Number(),
+  gift_id: Type.Number(),
+  price: Type.Number({ minimum: 0 }),
+  amount: Type.Number({ minimum: 1 }),
+});
+export type SendGiftInput = Static<typeof SendGiftBodySchema>;
+
+export const sendGiftSchema = {
+  description: "送出禮物（建立交易）",
+  tags: ["streams"],
+  params: GetStreamParamsSchema,
+  body: SendGiftBodySchema,
+  response: {
+    201: Type.Object({
+      id: Type.Number(),
+      stream_id: Type.Number(),
+      sender_id: Type.Number(),
+      receiver_id: Type.Number(),
+      gift_id: Type.Number(),
+      price: Type.Number(),
+      amount: Type.Number(),
+      created_at: Type.String({ format: "date-time" }),
+    }),
+  },
+};

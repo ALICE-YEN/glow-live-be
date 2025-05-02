@@ -5,6 +5,7 @@ import type { PoolClient } from "pg";
 import type {
   CreateStreamInput,
   UpdateStreamInput,
+  SendGiftInput,
 } from "../schemas/streams.schema";
 
 export const createStream = async (
@@ -112,6 +113,24 @@ export const endStream = async (client: PoolClient, streamId: string) => {
       `;
 
   const values = [streamId];
+
+  const result = await client.query(query, values);
+  return result.rows[0];
+};
+
+export const sendGift = async (
+  client: PoolClient,
+  streamId: number,
+  data: SendGiftInput
+) => {
+  const { sender_id, receiver_id, gift_id, price, amount } = data;
+
+  const query = `INSERT INTO gift_transactions
+     (stream_id, sender_id, receiver_id, gift_id, price, amount)
+     VALUES ($1, $2, $3, $4, $5, $6)
+     RETURNING *;`;
+
+  const values = [streamId, sender_id, receiver_id, gift_id, price, amount];
 
   const result = await client.query(query, values);
   return result.rows[0];

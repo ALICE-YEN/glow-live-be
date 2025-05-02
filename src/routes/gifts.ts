@@ -1,9 +1,9 @@
 import { FastifyInstance } from "fastify";
+import { createGiftSchema, getGiftsSchema } from "../schemas/gifts.schema";
 import {
   createGiftHandler,
   getGiftsHandler,
 } from "../controllers/gifts.controller";
-import { createGiftSchema, getGiftsSchema } from "../schemas/gifts.schema";
 
 export default async function giftRoutes(fastify: FastifyInstance) {
   fastify.post("/", { schema: createGiftSchema }, createGiftHandler);

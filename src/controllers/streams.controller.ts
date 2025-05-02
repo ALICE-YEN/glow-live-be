@@ -7,11 +7,13 @@ import {
   getStreams,
   updateStream,
   endStream,
+  sendGift,
 } from "../services/streams.service";
 import type {
   CreateStreamInput,
   GetStreamParams,
   UpdateStreamInput,
+  SendGiftInput,
 } from "../schemas/streams.schema";
 import { generateStreamKey } from "../helpers/cryptoHelpers";
 
@@ -142,6 +144,27 @@ export const endStreamHandler = async (
     return reply
       .status(500)
       .send({ message: "關閉直播失敗", code: "INTERNAL_ERROR" });
+  } finally {
+    client.release();
+  }
+};
+
+export const sendGiftHandler = async (
+  request: FastifyRequest<{ Params: GetStreamParams; Body: SendGiftInput }>,
+  reply: FastifyReply
+) => {
+  const client = await request.server.pg.connect();
+  try {
+    const result = await sendGift(
+      client,
+      request.params.streamId,
+      request.body
+    );
+    return reply.status(201).send(result);
+  } catch (err) {
+    return reply
+      .status(400)
+      .send({ message: "送出禮物（建立交易）失敗", code: "INTERNAL_ERROR" });
   } finally {
     client.release();
   }

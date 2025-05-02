@@ -5,6 +5,7 @@ import {
   getStreamsSchema,
   updateStreamSchema,
   endStreamSchema,
+  sendGiftSchema,
 } from "../schemas/streams.schema";
 import {
   createStreamHandler,
@@ -12,6 +13,7 @@ import {
   getStreamsHandler,
   updateStreamHandler,
   endStreamHandler,
+  sendGiftHandler,
 } from "../controllers/streams.controller";
 
 // 利用 Fastify 在路由註冊時綁定 schema，讓 Fastify
@@ -32,6 +34,7 @@ async function streamsRoutes(fastify: FastifyInstance) {
     { schema: endStreamSchema },
     endStreamHandler
   );
+  fastify.post("/:streamId/gifts", { schema: sendGiftSchema }, sendGiftHandler);
 }
 
 export default streamsRoutes;
