@@ -23,6 +23,7 @@ export const createChat = async (
   const result = await client.query(query, values);
   return result.rows[0];
 };
+
 export const updateChat = async (
   client: PoolClient,
   chatId: number,

@@ -20,7 +20,7 @@ import {
 // 1. 自動驗證請求參數，若驗證失敗回傳 400 error（不進入 controller）
 // 2. 自動幫你移除不必要的欄位
 // 3. 產生 Swagger 文件（藉由 fastify-swagger 插件）
-async function streamsRoutes(fastify: FastifyInstance) {
+export default async function streamsRoutes(fastify: FastifyInstance) {
   fastify.post("/", { schema: createStreamSchema }, createStreamHandler);
   fastify.get("/:streamId", { schema: getStreamSchema }, getStreamHandler);
   fastify.get("/", { schema: getStreamsSchema }, getStreamsHandler);
@@ -36,5 +36,3 @@ async function streamsRoutes(fastify: FastifyInstance) {
   );
   fastify.post("/:streamId/gifts", { schema: sendGiftSchema }, sendGiftHandler);
 }
-
-export default streamsRoutes;

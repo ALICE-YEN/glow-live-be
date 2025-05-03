@@ -12,7 +12,7 @@ import {
   deleteChatHandler,
 } from "../controllers/chats.controller";
 
-async function chatsRoutes(fastify: FastifyInstance) {
+export default async function chatsRoutes(fastify: FastifyInstance) {
   fastify.post(
     "/:streamId/chats",
     { schema: createChatSchema },
@@ -30,5 +30,3 @@ async function chatsRoutes(fastify: FastifyInstance) {
     deleteChatHandler
   );
 }
-
-export default chatsRoutes;
