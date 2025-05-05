@@ -59,3 +59,20 @@ export const getFollowing = async (client: PoolClient, userId: number) => {
   const result = await client.query(query, values);
   return result.rows;
 };
+
+export const isFollower = async (
+  client: PoolClient,
+  followerId: number,
+  followingId: number
+): Promise<boolean> => {
+  const query = `
+    SELECT 1 FROM followers
+    WHERE follower_id = $1 AND following_id = $2
+    LIMIT 1;
+  `;
+
+  const values = [followerId, followingId];
+
+  const result = await client.query(query, values);
+  return result.rowCount > 0;
+};

@@ -28,7 +28,7 @@ export const createStream = async (
   return result.rows[0];
 };
 
-export const getStream = async (client: PoolClient, streamId: string) => {
+export const getStream = async (client: PoolClient, streamId: number) => {
   const query = `
       SELECT * FROM streams WHERE id = $1;
       `;
@@ -50,7 +50,7 @@ export const getStreams = async (client: PoolClient) => {
 
 export const updateStream = async (
   client: PoolClient,
-  streamId: string,
+  streamId: number,
   updateData: UpdateStreamInput
 ) => {
   const fields: string[] = [];
@@ -104,7 +104,7 @@ export const updateStream = async (
   return result.rows[0];
 };
 
-export const endStream = async (client: PoolClient, streamId: string) => {
+export const endStream = async (client: PoolClient, streamId: number) => {
   const query = `
       UPDATE streams
       SET status = 'ended', ended_at = NOW(), updated_at = NOW()

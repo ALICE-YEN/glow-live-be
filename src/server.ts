@@ -3,6 +3,7 @@ import cors from "@fastify/cors";
 import fastifyPostgres from "@fastify/postgres";
 import swagger from "@fastify/swagger";
 import swaggerUI from "@fastify/swagger-ui";
+import socketPlugin from "./plugins/socket";
 import streamsRoutes from "./routes/streams.js";
 import chatsRoutes from "./routes/chats.js";
 import giftsRoutes from "./routes/gifts.js";
@@ -44,6 +45,8 @@ fastify.register(streamsRoutes, { prefix: "/api/streams" });
 fastify.register(chatsRoutes, { prefix: "/api/streams" });
 fastify.register(giftsRoutes, { prefix: "/api/gifts" });
 fastify.register(followsRoutes, { prefix: "/api/users" });
+
+fastify.register(socketPlugin);
 
 const start = async () => {
   try {
