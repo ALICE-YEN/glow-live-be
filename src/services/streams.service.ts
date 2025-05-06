@@ -123,14 +123,14 @@ export const sendGift = async (
   streamId: number,
   data: SendGiftInput
 ) => {
-  const { sender_id, receiver_id, gift_id, price, amount } = data;
+  const { senderId, giftId, price, amount } = data;
 
   const query = `INSERT INTO gift_transactions
-     (stream_id, sender_id, receiver_id, gift_id, price, amount)
-     VALUES ($1, $2, $3, $4, $5, $6)
+     (stream_id, sender_id, gift_id, price, amount)
+     VALUES ($1, $2, $3, $4, $5)
      RETURNING *;`;
 
-  const values = [streamId, sender_id, receiver_id, gift_id, price, amount];
+  const values = [streamId, senderId, giftId, price, amount];
 
   const result = await client.query(query, values);
   return result.rows[0];

@@ -102,9 +102,8 @@ export const endStreamSchema = {
 };
 
 export const SendGiftBodySchema = Type.Object({
-  sender_id: Type.Number(),
-  receiver_id: Type.Number(),
-  gift_id: Type.Number(),
+  senderId: Type.Number(),
+  giftId: Type.Number(),
   price: Type.Number({ minimum: 0 }),
   amount: Type.Number({ minimum: 1 }),
 });
@@ -120,7 +119,6 @@ export const sendGiftSchema = {
       id: Type.Number(),
       stream_id: Type.Number(),
       sender_id: Type.Number(),
-      receiver_id: Type.Number(),
       gift_id: Type.Number(),
       price: Type.Number(),
       amount: Type.Number(),
