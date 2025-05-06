@@ -14,6 +14,7 @@ import type {
   GetStreamParams,
   UpdateStreamInput,
   SendGiftInput,
+  GetStreamsQuery,
 } from "../schemas/streams.schema";
 import { generateStreamKey } from "../helpers/cryptoHelpers";
 
@@ -70,13 +71,14 @@ export const getStreamHandler = async (
 };
 
 export const getStreamsHandler = async (
-  request: FastifyRequest,
+  request: FastifyRequest<{ Querystring: GetStreamsQuery }>,
   reply: FastifyReply
 ) => {
   const client = await request.server.pg.connect();
+  const { status } = request.query;
 
   try {
-    const result = await getStreams(client);
+    const result = await getStreams(client, status);
     return reply.status(200).send(result);
   } catch (error) {
     return reply

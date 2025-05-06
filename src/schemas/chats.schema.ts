@@ -2,16 +2,16 @@ import { Type, Static } from "@sinclair/typebox";
 
 const ChatResponseSchema = Type.Object({
   id: Type.Number(),
-  stream_id: Type.Number(),
-  user_id: Type.Number(),
+  streamId: Type.Number(),
+  userId: Type.Number(),
   content: Type.String(),
   type: Type.Enum({
     text: "text",
     emoji: "emoji",
     gift: "gift",
   }),
-  created_at: Type.String({ format: "date-time" }),
-  updated_at: Type.String({ format: "date-time" }),
+  createdAt: Type.String({ format: "date-time" }),
+  updatedAt: Type.String({ format: "date-time" }),
 });
 
 export const StreamIdParamSchema = Type.Object({

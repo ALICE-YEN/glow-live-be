@@ -2,22 +2,22 @@ import { Type, Static } from "@sinclair/typebox";
 
 const StreamResponseSchema = Type.Object({
   id: Type.Number(),
-  user_id: Type.Number(),
+  userId: Type.Number(),
   title: Type.String(),
   description: Type.Optional(Type.String()),
-  stream_key: Type.String(),
+  streamKey: Type.String(),
   status: Type.Enum({
     waiting: "waiting",
     live: "live",
     ended: "ended",
   }),
-  started_at: Type.Union([Type.String({ format: "date-time" }), Type.Null()]),
-  ended_at: Type.Union([Type.String({ format: "date-time" }), Type.Null()]),
-  thumbnail_url: Type.Optional(Type.String()),
-  is_recorded: Type.Boolean(),
-  playback_url: Type.Union([Type.String(), Type.Null()]),
-  created_at: Type.String({ format: "date-time" }),
-  updated_at: Type.String({ format: "date-time" }),
+  startedAt: Type.Union([Type.String({ format: "date-time" }), Type.Null()]),
+  endedAt: Type.Union([Type.String({ format: "date-time" }), Type.Null()]),
+  thumbnailUrl: Type.Optional(Type.String()),
+  isRecorded: Type.Boolean(),
+  playbackUrl: Type.Union([Type.String(), Type.Null()]),
+  createdAt: Type.String({ format: "date-time" }),
+  updatedAt: Type.String({ format: "date-time" }),
 });
 
 // 抽出 body schema（可重用 + 推導 TS 類型）
@@ -56,9 +56,22 @@ export const getStreamSchema = {
   },
 };
 
+const GetStreamsQuerySchema = Type.Object({
+  status: Type.Optional(
+    Type.Union([
+      Type.Literal("waiting"),
+      Type.Literal("live"),
+      Type.Literal("ended"),
+    ])
+  ),
+});
+
+export type GetStreamsQuery = Static<typeof GetStreamsQuerySchema>;
+
 export const getStreamsSchema = {
   description: "取得直播清單",
   tags: ["streams"],
+  querystring: GetStreamsQuerySchema,
   response: {
     200: Type.Array(StreamResponseSchema),
   },
@@ -72,11 +85,11 @@ const UpdateStreamBodySchema = Type.Partial(
       waiting: "waiting",
       live: "live",
     }), // 只允許更新為 waiting 或 live
-    started_at: Type.String({ format: "date-time" }),
-    ended_at: Type.String({ format: "date-time" }),
-    thumbnail_url: Type.String({ format: "uri" }),
-    is_recorded: Type.Boolean(),
-    playback_url: Type.String({ format: "uri" }),
+    startedAt: Type.String({ format: "date-time" }),
+    endedAt: Type.String({ format: "date-time" }),
+    thumbnailUrl: Type.String({ format: "uri" }),
+    isRecorded: Type.Boolean(),
+    playbackUrl: Type.String({ format: "uri" }),
   })
 );
 
@@ -117,12 +130,12 @@ export const sendGiftSchema = {
   response: {
     201: Type.Object({
       id: Type.Number(),
-      stream_id: Type.Number(),
-      sender_id: Type.Number(),
-      gift_id: Type.Number(),
+      streamId: Type.Number(),
+      senderId: Type.Number(),
+      giftId: Type.Number(),
       price: Type.Number(),
       amount: Type.Number(),
-      created_at: Type.String({ format: "date-time" }),
+      createdAt: Type.String({ format: "date-time" }),
     }),
   },
 };

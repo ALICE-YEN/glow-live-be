@@ -12,9 +12,9 @@ export const followUserSchema = {
   response: {
     201: Type.Object({
       id: Type.Number(),
-      follower_id: Type.Number(),
-      following_id: Type.Number(),
-      created_at: Type.String({ format: "date-time" }),
+      followerId: Type.Number(),
+      followingId: Type.Number(),
+      createdAt: Type.String({ format: "date-time" }),
     }),
     409: Type.Object({
       message: Type.String(),

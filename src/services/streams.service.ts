@@ -2,6 +2,7 @@
 // 保持與框架（Fastify、Express）無關，確保可被單元測試與複用
 
 import type { PoolClient } from "pg";
+import camelcaseKeys from "camelcase-keys";
 import type {
   CreateStreamInput,
   UpdateStreamInput,
@@ -25,7 +26,7 @@ export const createStream = async (
   const values = [userId, title, description, streamKey, thumbnailUrl];
 
   const result = await client.query(query, values);
-  return result.rows[0];
+  return camelcaseKeys(result.rows[0], { deep: true });
 };
 
 export const getStream = async (client: PoolClient, streamId: number) => {
@@ -36,16 +37,18 @@ export const getStream = async (client: PoolClient, streamId: number) => {
   const values = [streamId];
 
   const result = await client.query(query, values);
-  return result.rows[0];
+  return camelcaseKeys(result.rows[0], { deep: true });
 };
 
-export const getStreams = async (client: PoolClient) => {
-  const query = `
-      SELECT * FROM streams;
-      `;
+export const getStreams = async (client: PoolClient, status?: string) => {
+  const query = status
+    ? `SELECT * FROM streams WHERE status = $1 ORDER BY created_at DESC`
+    : `SELECT * FROM streams ORDER BY created_at DESC`;
 
-  const result = await client.query(query);
-  return result.rows;
+  const values = status ? [status] : [];
+
+  const result = await client.query(query, values);
+  return camelcaseKeys(result.rows, { deep: true });
 };
 
 export const updateStream = async (
@@ -69,25 +72,25 @@ export const updateStream = async (
     fields.push(`status = $${index++}`);
     values.push(updateData.status);
   }
-  if (updateData.started_at !== undefined) {
+  if (updateData.startedAt !== undefined) {
     fields.push(`started_at = $${index++}`);
-    values.push(updateData.started_at);
+    values.push(updateData.startedAt);
   }
-  if (updateData.ended_at !== undefined) {
+  if (updateData.endedAt !== undefined) {
     fields.push(`ended_at = $${index++}`);
-    values.push(updateData.ended_at);
+    values.push(updateData.endedAt);
   }
-  if (updateData.thumbnail_url !== undefined) {
+  if (updateData.thumbnailUrl !== undefined) {
     fields.push(`thumbnail_url = $${index++}`);
-    values.push(updateData.thumbnail_url);
+    values.push(updateData.thumbnailUrl);
   }
-  if (updateData.is_recorded !== undefined) {
+  if (updateData.isRecorded !== undefined) {
     fields.push(`is_recorded = $${index++}`);
-    values.push(updateData.is_recorded);
+    values.push(updateData.isRecorded);
   }
-  if (updateData.playback_url !== undefined) {
+  if (updateData.playbackUrl !== undefined) {
     fields.push(`playback_url = $${index++}`);
-    values.push(updateData.playback_url);
+    values.push(updateData.playbackUrl);
   }
 
   fields.push(`updated_at = NOW()`);
@@ -101,7 +104,7 @@ export const updateStream = async (
   values.push(streamId);
 
   const result = await client.query(query, values);
-  return result.rows[0];
+  return camelcaseKeys(result.rows[0], { deep: true });
 };
 
 export const endStream = async (client: PoolClient, streamId: number) => {
@@ -115,7 +118,7 @@ export const endStream = async (client: PoolClient, streamId: number) => {
   const values = [streamId];
 
   const result = await client.query(query, values);
-  return result.rows[0];
+  return camelcaseKeys(result.rows[0], { deep: true });
 };
 
 export const sendGift = async (
@@ -133,5 +136,5 @@ export const sendGift = async (
   const values = [streamId, senderId, giftId, price, amount];
 
   const result = await client.query(query, values);
-  return result.rows[0];
+  return camelcaseKeys(result.rows[0], { deep: true });
 };
