@@ -49,9 +49,10 @@ export const getStreamHandler = async (
 ) => {
   const client = await request.server.pg.connect();
   const streamId = request.params.streamId;
+  const userId = request.user?.id ?? 1; // TODO: 從 JWT middleware 注入 user
 
   try {
-    const result = await getStream(client, streamId);
+    const result = await getStream(client, streamId, userId);
 
     if (!result) {
       return reply.status(404).send({

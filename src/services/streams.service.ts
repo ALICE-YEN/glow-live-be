@@ -29,12 +29,23 @@ export const createStream = async (
   return camelcaseKeys(result.rows[0], { deep: true });
 };
 
-export const getStream = async (client: PoolClient, streamId: number) => {
+export const getStream = async (
+  client: PoolClient,
+  streamId: number,
+  currentUserId: number
+) => {
   const query = `
-      SELECT * FROM streams WHERE id = $1;
+      SELECT
+        s.*,
+        EXISTS (
+          SELECT 1 FROM followers f
+          WHERE f.follower_id = $2 AND f.following_id = s.user_id
+        ) AS is_followed_by_current_user
+      FROM streams s
+      WHERE s.id = $1
       `;
 
-  const values = [streamId];
+  const values = [streamId, currentUserId];
 
   const result = await client.query(query, values);
   return camelcaseKeys(result.rows[0], { deep: true });
