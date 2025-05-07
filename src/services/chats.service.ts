@@ -45,10 +45,19 @@ export const updateChat = async (
 
 export const getChats = async (client: PoolClient, streamId: number) => {
   const query = `
-    SELECT *
+    SELECT
+      chat_messages.id,
+      chat_messages.stream_id,
+      chat_messages.user_id,
+      users.username,
+      chat_messages.content,
+      chat_messages.type,
+      chat_messages.created_at,
+      chat_messages.updated_at
     FROM chat_messages
-    WHERE stream_id = $1
-    ORDER BY created_at ASC;
+    JOIN users ON chat_messages.user_id = users.id
+    WHERE chat_messages.stream_id = $1
+    ORDER BY chat_messages.created_at ASC;
   `;
 
   const values = [streamId];
