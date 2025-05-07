@@ -47,9 +47,10 @@ const GetStreamParamsSchema = Type.Object({
 // 直接推導 TypeScript 類型，不需重複寫
 export type GetStreamParams = Static<typeof GetStreamParamsSchema>;
 
-const StreamWithIsFollowedByCurrentUserResponseSchema = Type.Intersect([
+const StreamWithUserMetaResponseSchema = Type.Intersect([
   StreamResponseSchema,
   Type.Object({
+    username: Type.String(),
     isFollowedByCurrentUser: Type.Boolean(),
   }),
 ]);
@@ -59,7 +60,7 @@ export const getStreamSchema = {
   tags: ["streams"],
   params: GetStreamParamsSchema,
   response: {
-    200: StreamWithIsFollowedByCurrentUserResponseSchema,
+    200: StreamWithUserMetaResponseSchema,
   },
 };
 

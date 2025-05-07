@@ -37,11 +37,13 @@ export const getStream = async (
   const query = `
       SELECT
         s.*,
+        users.username,
         EXISTS (
           SELECT 1 FROM followers f
           WHERE f.follower_id = $2 AND f.following_id = s.user_id
         ) AS is_followed_by_current_user
       FROM streams s
+      JOIN users ON s.user_id = users.id
       WHERE s.id = $1
       `;
 
