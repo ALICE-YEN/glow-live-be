@@ -1,0 +1,24 @@
+@startuml
+title Glow Live v1 架構圖 - OBS + RTMP + NMS + HLS
+
+actor Streamer as S
+participant "OBS (RTMP Client)" as OBS
+participant "Node-Media-Server (RTMP/HLS)" as NMS
+database "NMS .ts / .m3u8" as Storage
+actor Viewer as V
+participant "HLS.js Player\n(<video>)" as HLS
+
+== 推流階段 ==
+S -> OBS: 啟動直播
+OBS -> NMS: RTMP 推流（H.264 + AAC）
+
+== 中轉處理階段 ==
+NMS -> Storage: 儲存成 .ts 檔 & m3u8 playlist
+
+== 播放階段 ==
+V -> HLS: 請求 m3u8
+HLS -> Storage: 請求 .ts chunks
+Storage -> HLS: 回傳影片資料
+HLS -> V: 顯示影片畫面（延遲約 2～5 秒）
+
+@enduml

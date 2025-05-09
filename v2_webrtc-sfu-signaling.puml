@@ -1,0 +1,31 @@
+@startuml
+title Glow Live v2 架構圖 - WebRTC + SFU
+
+actor Broadcaster as B
+actor Viewer as V
+
+participant "前端：主播頁\n(Browser)" as FE_B
+participant "信令伺服器\n(WebSocket)" as Signal
+participant "WebRTC SFU\n(LiveKit / mediasoup / ion)" as SFU
+participant "前端：觀眾頁\n(Browser)" as FE_V
+
+== 推流流程 ==
+B -> FE_B: 開啟鏡頭 getUserMedia()
+FE_B -> Signal: WebSocket connect
+FE_B -> Signal: 傳送 SDP offer
+Signal -> SFU: 傳送 SDP offer
+SFU -> Signal: 回傳 SDP answer
+Signal -> FE_B: 回傳 SDP answer
+FE_B --> SFU: 建立 PeerConnection 傳送 MediaStream
+
+== 觀眾播放流程 ==
+V -> FE_V: 進入觀看頁面
+FE_V -> Signal: WebSocket connect
+FE_V -> Signal: 請求訂閱 room
+Signal -> SFU: 傳送 SDP offer (觀眾)
+SFU -> Signal: 回傳 SDP answer
+Signal -> FE_V: 回傳 SDP answer
+SFU --> FE_V: 傳送遠端 MediaStream
+FE_V -> V: 顯示直播畫面 <video>
+
+@enduml
