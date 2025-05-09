@@ -14,6 +14,7 @@ import type {
   GetStreamParams,
   UpdateStreamInput,
   SendGiftInput,
+  GetStreamsQuery,
 } from "../schemas/streams.schema";
 import { generateStreamKey } from "../helpers/cryptoHelpers";
 
@@ -48,9 +49,10 @@ export const getStreamHandler = async (
 ) => {
   const client = await request.server.pg.connect();
   const streamId = request.params.streamId;
+  const userId = request.user?.id ?? 1; // TODO: 從 JWT middleware 注入 user
 
   try {
-    const result = await getStream(client, streamId);
+    const result = await getStream(client, streamId, userId);
 
     if (!result) {
       return reply.status(404).send({
@@ -70,13 +72,14 @@ export const getStreamHandler = async (
 };
 
 export const getStreamsHandler = async (
-  request: FastifyRequest,
+  request: FastifyRequest<{ Querystring: GetStreamsQuery }>,
   reply: FastifyReply
 ) => {
   const client = await request.server.pg.connect();
+  const { status } = request.query;
 
   try {
-    const result = await getStreams(client);
+    const result = await getStreams(client, status);
     return reply.status(200).send(result);
   } catch (error) {
     return reply

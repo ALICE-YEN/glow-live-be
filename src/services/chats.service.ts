@@ -2,6 +2,7 @@
 // 保持與框架（Fastify、Express）無關，確保可被單元測試與複用
 
 import { PoolClient } from "pg";
+import camelcaseKeys from "camelcase-keys";
 import { CreateChatInput, UpdateChatInput } from "../schemas/chats.schema";
 
 export const createChat = async (
@@ -21,7 +22,7 @@ export const createChat = async (
   const values = [streamId, userId, content, type];
 
   const result = await client.query(query, values);
-  return result.rows[0];
+  return camelcaseKeys(result.rows[0], { deep: true });
 };
 
 export const updateChat = async (
@@ -39,21 +40,30 @@ export const updateChat = async (
   const values = [data.content, chatId];
 
   const result = await client.query(query, values);
-  return result.rows[0];
+  return camelcaseKeys(result.rows[0], { deep: true });
 };
 
 export const getChats = async (client: PoolClient, streamId: number) => {
   const query = `
-    SELECT *
+    SELECT
+      chat_messages.id,
+      chat_messages.stream_id,
+      chat_messages.user_id,
+      users.username,
+      chat_messages.content,
+      chat_messages.type,
+      chat_messages.created_at,
+      chat_messages.updated_at
     FROM chat_messages
-    WHERE stream_id = $1
-    ORDER BY created_at ASC;
+    JOIN users ON chat_messages.user_id = users.id
+    WHERE chat_messages.stream_id = $1
+    ORDER BY chat_messages.created_at ASC;
   `;
 
   const values = [streamId];
 
   const result = await client.query(query, values);
-  return result.rows;
+  return camelcaseKeys(result.rows, { deep: true });
 };
 
 export const deleteChat = async (client: PoolClient, chatId: number) => {
@@ -66,5 +76,5 @@ export const deleteChat = async (client: PoolClient, chatId: number) => {
   const values = [chatId];
 
   const result = await client.query(query, values);
-  return result.rows[0];
+  return camelcaseKeys(result.rows[0], { deep: true });
 };

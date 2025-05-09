@@ -77,10 +77,10 @@ async function seed() {
 
     // 插入 gift_transactions
     await client.query(`
-      INSERT INTO gift_transactions (stream_id, sender_id, receiver_id, gift_id, price, amount)
+      INSERT INTO gift_transactions (stream_id, sender_id, gift_id, price, amount)
       VALUES
-        (${streams[0].id}, ${users[1].id}, ${users[0].id}, ${gifts[0].id}, ${gifts[0].price}, 1),
-        (${streams[0].id}, ${users[2].id}, ${users[0].id}, ${gifts[1].id}, ${gifts[1].price}, 2);
+        (${streams[0].id}, ${users[1].id}, ${gifts[0].id}, ${gifts[0].price}, 1),
+        (${streams[0].id}, ${users[2].id}, ${gifts[1].id}, ${gifts[1].price}, 2);
     `);
 
     console.log("💎 Gift transactions seeded.");

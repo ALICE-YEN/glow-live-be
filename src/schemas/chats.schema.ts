@@ -1,17 +1,19 @@
 import { Type, Static } from "@sinclair/typebox";
 
+const ChatTypeEnum = Type.Union([
+  Type.Literal("text"),
+  Type.Literal("emoji"),
+  Type.Literal("gift"),
+]);
+
 const ChatResponseSchema = Type.Object({
   id: Type.Number(),
-  stream_id: Type.Number(),
-  user_id: Type.Number(),
+  streamId: Type.Number(),
+  userId: Type.Number(),
   content: Type.String(),
-  type: Type.Enum({
-    text: "text",
-    emoji: "emoji",
-    gift: "gift",
-  }),
-  created_at: Type.String({ format: "date-time" }),
-  updated_at: Type.String({ format: "date-time" }),
+  type: ChatTypeEnum,
+  createdAt: Type.String({ format: "date-time" }),
+  updatedAt: Type.String({ format: "date-time" }),
 });
 
 export const StreamIdParamSchema = Type.Object({
@@ -29,13 +31,7 @@ export type ChatRouteParams = Static<typeof ChatIdParamSchema>;
 
 export const CreateChatBodySchema = Type.Object({
   content: Type.String({ minLength: 1 }),
-  type: Type.Optional(
-    Type.Enum({
-      text: "text",
-      emoji: "emoji",
-      gift: "gift",
-    })
-  ),
+  type: Type.Optional(ChatTypeEnum),
 });
 export type CreateChatInput = Static<typeof CreateChatBodySchema>;
 
@@ -64,12 +60,19 @@ export const updateChatSchema = {
   },
 };
 
+const ChatWithUsernameResponseSchema = Type.Intersect([
+  ChatResponseSchema,
+  Type.Object({
+    username: Type.String(),
+  }),
+]);
+
 export const getChatsSchema = {
   description: "取得聊天室訊息清單",
   tags: ["chats"],
   params: StreamIdParamSchema,
   response: {
-    200: Type.Array(ChatResponseSchema),
+    200: Type.Array(ChatWithUsernameResponseSchema),
   },
 };
 
