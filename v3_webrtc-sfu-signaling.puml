@@ -1,5 +1,5 @@
 @startuml
-title Glow Live v2 架構圖 - WebRTC + SFU
+title Glow Live v3 架構圖 - WebRTC + SFU
 
 actor Broadcaster as B
 actor Viewer as V

@@ -1,0 +1,75 @@
+@startuml
+title Glow Live v2 架構圖 - WebRTC P2P
+
+actor Broadcaster as B
+participant "前端：主播頁\n(Browser)" as FE_B
+participant "信令伺服器\n(WebSocket)" as Signal
+participant "前端：觀眾頁\n(Browser)" as FE_V
+actor Viewer as V
+
+== 推流流程 ==
+B -> FE_B: 開啟鏡頭 getUserMedia()
+note right of FE_B
+向瀏覽器請求攝影機與麥克風權限，
+取得 MediaStream 給 WebRTC 使用
+end note
+
+FE_B -> FE_B: 建立 RTCPeerConnection
+note right of FE_B
+初始化連線物件，準備建立 P2P 連線
+end note
+
+FE_B -> FE_B: createOffer() + setLocalDescription()
+note right of FE_B
+主動發起連線協議，offer 中包含媒體能力，
+setLocalDescription 用來設定自己的 SDP
+end note
+
+FE_B -> Signal: WebSocket connect
+FE_B -> Signal: 傳送 SDP offer
+note right of Signal
+信令伺服器不參與音訊/影片傳輸，
+只負責轉送 SDP 與 ICE candidate
+end note
+
+Signal -> FE_V: 傳送 offer 到觀眾頁
+
+== 播放流程 ==
+V -> FE_V: 進入觀看頁面
+FE_V -> Signal: WebSocket connect
+FE_V -> FE_V: 建立 RTCPeerConnection
+note right of FE_V
+與主播端建立 WebRTC 連線物件，
+雙方都需建立自己的 RTCPeerConnection
+end note
+
+FE_V -> FE_V: setRemoteDescription(offer)
+note right of FE_V
+收到主播送出的 offer，設定為遠端描述
+end note
+
+FE_V -> FE_V: createAnswer() + setLocalDescription()
+note right of FE_V
+回應 offer 並產生 answer，告知支援的媒體能力
+end note
+
+FE_V -> Signal: 傳送 SDP answer
+Signal -> FE_B: 傳送 answer 到主播頁
+FE_B -> FE_B: setRemoteDescription(answer)
+note right of FE_B
+收到觀眾的 answer，完成連線設定
+end note
+
+== 建立媒體通道 ==
+FE_B --> FE_V: 建立 WebRTC P2P 傳送 MediaStream
+note over FE_B, FE_V
+P2P 連線建立成功後，媒體流直接傳送，
+不經過信令伺服器，延遲與頻寬效能較佳
+end note
+
+FE_V -> V: 顯示直播畫面 <video>
+note right of FE_V
+觀眾端將 MediaStream 掛載到 <video> 標籤顯示
+end note
+
+@enduml
